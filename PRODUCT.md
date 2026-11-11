@@ -51,3 +51,4 @@ When an active test-taker clicks *"Report error"* during an exam and types a com
 3. Once faculty verifies the fix with one click on the console, the adjustment is finalized across all batches retroactively.
 
 This converts an error report from a point of frustration into an active moment of student empowerment and brand trust.
+

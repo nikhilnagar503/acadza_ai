@@ -207,3 +207,4 @@ with open(output_js, 'w') as f:
 
 print(f"Generated console bundle with {len(groups)} question groups and {len(unreported_bonus)} bonus questions.")
 print(f"Written to {output_js}")
+

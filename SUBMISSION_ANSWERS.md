@@ -21,3 +21,4 @@ Immediate (available to start from Thursday, 12 November 2026).
 ### Question 4: In 2-3 lines, in your own words: why this work, why now?
 **Answer:**
 Competitive exams like JEE and NEET are life-defining milestones for lakhs of Indian students, where a single broken question or wrong key can alter a student's rank and future. AI has reached the precision where it can eliminate this friction instantly, but only if designed with rigorous safety guards and intuitive faculty ergonomics. Building that bridge between raw student reports and safe, verified fixes is high-impact work that matters right now.
+

@@ -156,3 +156,4 @@ Requirements:
    * Production questions in Acadza contain raw MathML (`<math xmlns="http://www.w3.org/1998/Math/MathML">`). Native MathML is now supported in all modern rendering engines (Blink/Chrome 109+, Gecko/Firefox, WebKit/Safari), loading in 0 ms with zero layout shift or script overhead.
 3. **What is never auto-applied?**
    * Authored content generation (distractor creation for `identical_options`), asset uploads (`diagram`), syllabus policy rulings (`syllabus`), and taxonomy re-tagging (`wrong_chapter`) are strictly constrained to `route: "faculty_review"`.
+
