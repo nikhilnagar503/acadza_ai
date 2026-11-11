@@ -39,14 +39,33 @@
     }
   </script>
   <style>
-    /* Professional Native MathML Styling */
+    /* High-Contrast Production Content Styling */
+    .rendered-content {
+      color: #0f172a !important;
+    }
+    .dark .rendered-content {
+      color: #f8fafc !important;
+    }
+    .rendered-content * {
+      color: inherit !important;
+    }
+    .rendered-content h3, .rendered-content p, .rendered-content span {
+      line-height: 1.6;
+    }
+
+    /* Native MathML Styling with Strict Contrast */
     math {
       font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", serif;
       font-size: 1.08em;
       letter-spacing: 0.015em;
+      color: #1e3a8a !important;
     }
-    .dark math {
-      color: #cbd5e1;
+    math, math * {
+      color: inherit !important;
+    }
+    .dark math, .dark math * {
+      color: #93c5fd !important;
+      fill: #93c5fd !important;
     }
     math mfrac {
       padding: 0 0.18em;
@@ -54,25 +73,29 @@
     math msqrt {
       padding: 0 0.12em;
     }
-    /* Surgical Diff Highlighter */
-    .diff-del {
-      background-color: rgba(239, 68, 68, 0.18);
-      color: #f87171;
+
+    /* Surgical Diff Highlighting with High Visibility */
+    .diff-del, .rendered-content .diff-del {
+      background-color: rgba(239, 68, 68, 0.22) !important;
+      color: #f87171 !important;
       text-decoration: line-through;
       padding: 2px 7px;
       border-radius: 5px;
-      font-weight: 600;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      font-weight: 700;
+      border: 1px solid rgba(239, 68, 68, 0.45);
+      display: inline-block;
     }
-    .diff-add {
-      background-color: rgba(16, 185, 129, 0.2);
-      color: #34d399;
+    .diff-add, .rendered-content .diff-add {
+      background-color: rgba(16, 185, 129, 0.24) !important;
+      color: #34d399 !important;
       padding: 2px 7px;
       border-radius: 5px;
-      font-weight: 600;
-      border: 1px solid rgba(16, 185, 129, 0.35);
+      font-weight: 700;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      display: inline-block;
     }
-    /* Subtle Custom Scrollbar */
+
+    /* Custom Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -81,11 +104,11 @@
       background: transparent;
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.25);
+      background: rgba(100, 116, 139, 0.35);
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: rgba(100, 116, 139, 0.45);
+      background: rgba(100, 116, 139, 0.55);
     }
   </style>
 </head>

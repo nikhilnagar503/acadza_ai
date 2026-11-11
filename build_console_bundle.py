@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from collections import defaultdict
 from datetime import datetime
 
@@ -15,6 +16,16 @@ with open(os.path.join(BASE_DIR, 'results.json'), 'r') as f:
 
 with open(os.path.join(BASE_DIR, 'data/taxonomy.json'), 'r') as f:
     taxonomy = json.load(f)
+
+def clean_production_html(html_str):
+    if not html_str:
+        return ""
+    # Strip hardcoded black text styles from production edtech HTML
+    cleaned = re.sub(r'style=[\"\'][^\"\']*color\s*:\s*(#000000|#000|black|rgb\(0,\s*0,\s*0\))[^\"\']*[\"\']', '', html_str, flags=re.IGNORECASE)
+    cleaned = re.sub(r'style=[\"\']color:#000000[\"\']', '', cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r'style=[\"\']true[\"\']', '', cleaned)
+    cleaned = re.sub(r'color\s*:\s*#000000;?', '', cleaned, flags=re.IGNORECASE)
+    return cleaned
 
 # Group reports by questionId
 q_reports = defaultdict(list)
@@ -47,11 +58,9 @@ for qid, reps in q_reports.items():
     qtype = q.get('questionType', 'scq')
     q_data = q.get(qtype, {})
     
-    # Calculate urgency score
     report_count = len(reps)
     latest_rep_time = max(r['reportedAt'] for r in reps)
     
-    # Dominant verdict/repair
     verdicts = [r['triage'].get('verdict') for r in reps]
     repairs = [r['triage'].get('repair') for r in reps if r['triage'].get('repair')]
     routes = [r['triage'].get('route') for r in reps]
@@ -66,19 +75,16 @@ for qid, reps in q_reports.items():
     urgency_score = 0
     urgency_reasons = []
     
-    # Report count factor
     if report_count > 1:
         urgency_score += report_count * 50
         urgency_reasons.append(f"{report_count} students reported this question")
     else:
         urgency_score += 20
         
-    # Faculty bottleneck factor
     if has_faculty_review:
         urgency_score += 45
         urgency_reasons.append(f"Requires human faculty approval ({primary_repair})")
         
-    # Repair severity factor
     if primary_repair:
         sev = severity_weights.get(primary_repair, 10)
         urgency_score += sev
@@ -93,12 +99,9 @@ for qid, reps in q_reports.items():
         urgency_score += 5
         urgency_reasons.append(f"{primary_verdict.replace('_', ' ').capitalize()}")
 
-    # Generate unified proposed diff
-    # Collect proposed edits from triage
     edits = [r['triage'].get('edit') for r in reps if r['triage'].get('edit')]
     proposed_edit = edits[0] if edits else None
     
-    # Create before/after preview
     diff_data = None
     if proposed_edit:
         target_field = proposed_edit['field']
@@ -114,7 +117,6 @@ for qid, reps in q_reports.items():
             'proposed_sample': replace_val
         }
     
-    # Representative evidence & reply
     primary_evidence = reps[0]['triage'].get('evidence', '')
     primary_reply = reps[0]['triage'].get('student_reply', '')
     avg_confidence = sum(r['triage'].get('confidence', 0.9) for r in reps) / len(reps)
@@ -126,8 +128,8 @@ for qid, reps in q_reports.items():
         'level': q.get('level', 'MEDIUM'),
         'questionType': qtype,
         'originalAnswer': q_data.get('answer', ''),
-        'questionHtml': q_data.get('question', ''),
-        'solutionHtml': q_data.get('solution', ''),
+        'questionHtml': clean_production_html(q_data.get('question', '')),
+        'solutionHtml': clean_production_html(q_data.get('solution', '')),
         'reports': reps,
         'reportCount': report_count,
         'latestReportedAt': latest_rep_time,
@@ -144,14 +146,11 @@ for qid, reps in q_reports.items():
     }
     groups.append(group_item)
 
-# Sort groups by urgencyScore descending, then by latestReportedAt descending
 groups.sort(key=lambda g: (g['urgencyScore'], g['latestReportedAt']), reverse=True)
 
-# Add rank
 for i, g in enumerate(groups):
     g['urgencyRank'] = i + 1
 
-# Process the 4 unreported bonus defect questions
 reported_qids = set(q_reports.keys())
 unreported_bonus = []
 for qid, q in questions.items():
@@ -181,8 +180,8 @@ for qid, q in questions.items():
             'level': q.get('level'),
             'questionType': qtype,
             'originalAnswer': q_data.get('answer'),
-            'questionHtml': q_data.get('question'),
-            'solutionHtml': q_data.get('solution'),
+            'questionHtml': clean_production_html(q_data.get('question', '')),
+            'solutionHtml': clean_production_html(q_data.get('solution', '')),
             'defectNote': defect_note,
             'suggestedRepair': suggested_repair
         })
@@ -205,6 +204,4 @@ output_js = os.path.join(BASE_DIR, 'console/data.js')
 with open(output_js, 'w') as f:
     f.write('window.ACADZA_DATA = ' + json.dumps(bundle, indent=2) + ';\n')
 
-print(f"Generated console bundle with {len(groups)} question groups and {len(unreported_bonus)} bonus questions.")
-print(f"Written to {output_js}")
-
+print(f"Generated clean console bundle with {len(groups)} question groups and {len(unreported_bonus)} bonus questions.")

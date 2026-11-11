@@ -246,7 +246,7 @@
         <span>${g.subject} &bull; ${g.chapter} (${g.questionType.toUpperCase()})</span>
         <span>Stored Key: <strong class="text-brand-600 dark:text-brand-400 font-bold">${Array.isArray(g.originalAnswer) ? g.originalAnswer.join(', ') : g.originalAnswer}</strong></span>
       </div>
-      <div class="max-h-24 overflow-y-auto text-xs text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 pt-1">
+      <div class="rendered-content max-h-24 overflow-y-auto text-xs text-slate-700 dark:text-slate-300 border-t border-slate-200 dark:border-slate-800 pt-1">
         ${g.questionHtml}
       </div>
     `;
